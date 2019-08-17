@@ -1,6 +1,6 @@
 # PyBFD3
 
-This version of [PyBFD](https://github.com/Groundworkstech/pybfd) mainly adds support for Python 3.x while keeping compatibility with Python 2.x by introducing specific workarounds and helpers.
+This clone of [PyBFD](https://github.com/Groundworkstech/pybfd) mainly adds support for Python 3.x while keeping compatibility with Python 2.x by introducing specific workarounds and helpers.
 
 Because it seems that pybfd is no longer maintained, I decided to create my own independent repository.
 
