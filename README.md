@@ -55,6 +55,6 @@ $ ./sample-session.py `which sudo`
 
 ## TODOs
 
-- improve ***get_symbols*** to not throwing an error if no symbols are present
+- ~~improve ***get_symbols*** to not throwing an error if no symbols are present~~
 - macOS testing
 
