@@ -393,13 +393,12 @@ class CustomBuildExtension( build_ext ):
 
         return build_ext.build_extensions(self)
 
-def get_long_description():
+def main():
     dir = path.abspath(path.dirname(__file__))
     readme = path.join(dir, 'README.md')
     with open(readme, encoding='utf-8') as file:
-         return file.read()
+         long_description = file.read()
 
-def main():
     try:
         #
         # Create a setup for the current package in order to allow the user to
@@ -410,8 +409,8 @@ def main():
             version = __version__,
             packages = [PACKAGE_DIR],
             description = __description__,
-            long_description = get_long_description(),
-            long_description_content_type='text/markdown',
+            long_description = long_description,
+            long_description_content_type="text/markdown",
             url = "https://github.com/0xe1a00000/pybfd3.git",
             ext_modules = [
                 # These extensions will be augmented using runtime information
