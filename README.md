@@ -4,13 +4,15 @@ This clone of [PyBFD](https://github.com/Groundworkstech/pybfd) mainly adds supp
 
 Because it seems that **pybfd** is no longer maintained, I decided to create my own independent repository.
 
-## Install (PyPI)
+## Install
+
+Method 1: Via Python Package Index (PyPI).
 
 ```
 $ pip install --user pybfd3
 ````
 
-## Install (Local)
+Method 2: Local installation.
 
 ```
 $ git clone https://github.com/0xe1a00000/pybfd3.git
