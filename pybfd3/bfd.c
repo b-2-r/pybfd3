@@ -48,34 +48,32 @@ get_symbols(bfd* abfd, PyObject** py_symbol_list) {
 
     // Calculate the space necessary to hold all the symbolic information.
     storage_needed_static = bfd_get_symtab_upper_bound (abfd);
-    storage_needed_dynamic = bfd_get_dynamic_symtab_upper_bound (abfd);
-
-    if (storage_needed_static + storage_needed_dynamic <= 0)
-        return -1;
-
-    symbol_table = (asymbol **) malloc(
-        storage_needed_static + storage_needed_dynamic);
-
-    number_of_symbols_static = 
-        bfd_canonicalize_symtab(abfd, symbol_table);
-
-    number_of_symbols_dynamic =
-        bfd_canonicalize_dynamic_symtab(
-            abfd, &symbol_table[number_of_symbols_static]);
-
-    // Make sure we've got some symbols. Otherwise return.
-    if (number_of_symbols_static + number_of_symbols_dynamic < 0) {
-        // Release unused symbol table and return.
-        if (symbol_table)
-            free (symbol_table);
-
-        return -1;
+    if (storage_needed_static < 0) {
+        storage_needed_static = 0;
     }
 
-    for (i = 0; i < number_of_symbols_static + number_of_symbols_dynamic; i++) {
-        
-        symbol = symbol_table[i];
+    storage_needed_dynamic = bfd_get_dynamic_symtab_upper_bound (abfd);
+    if (storage_needed_dynamic < 0) {
+        storage_needed_dynamic = 0;
+    }
 
+    if (storage_needed_static + storage_needed_dynamic <= 0)
+        return 0;
+
+    symbol_table = (asymbol **) malloc(storage_needed_static + storage_needed_dynamic);
+
+    number_of_symbols_static =  bfd_canonicalize_symtab(abfd, symbol_table);
+    if (number_of_symbols_static < 0) {
+        number_of_symbols_static = 0;
+    }
+
+    number_of_symbols_dynamic = bfd_canonicalize_dynamic_symtab(abfd, &symbol_table[number_of_symbols_static]);
+    if (number_of_symbols_dynamic < 0) {
+        number_of_symbols_dynamic = 0;
+    }
+
+    for (i = 0; i < number_of_symbols_static + number_of_symbols_dynamic; i++) {   
+        symbol = symbol_table[i];
         PyList_Append(*py_symbol_list,
             Py_BuildValue(
                 "(Is" PYBFD3_SYMBOL_VALUE_FMT PYBFD3_SYMBOL_FLAG_FMT ")",
