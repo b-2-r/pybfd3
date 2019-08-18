@@ -1,7 +1,7 @@
 # 
 # Copyright (c) 2013 Groundworks Technologies
 # 
-# This code is part Python pybfd module (libbfd extension module)
+# This code is part of the PyBFD3 module (libbfd extension module)
 #
 from __future__ import absolute_import
 from builtins import object

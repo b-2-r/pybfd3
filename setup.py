@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2013 Groundworks Technologies
 #
-# This code is part PyBFD3 module (libbfd & libopcodes extension module)
+# This code is part of the PyBFD3 module (libbfd & libopcodes extension module)
 #
 
 from __future__ import print_function
@@ -12,8 +12,10 @@ import re
 import sys
 import platform
 
+from setuptools import setup, Extension
+
 from traceback import print_exc
-from distutils.core import setup, Extension
+#from distutils.core import setup, Extension
 from distutils.ccompiler import new_compiler
 from distutils.command.build_ext import build_ext
 from distutils.command.build import build

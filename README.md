@@ -1,21 +1,25 @@
 # PyBFD3
 
-This version of [PyBFD](https://github.com/Groundworkstech/pybfd) mainly adds support for Python 3.x while keeping compatibility with Python 2.x by introducing specific workarounds and helpers.
+This clone of [PyBFD](https://github.com/Groundworkstech/pybfd) mainly adds support for Python 3.x while keeping compatibility with Python 2.x. To prevent conflicts and possible confusion, the name of the module/package has changed to **pybfd3**
 
-Because it seems that pybfd is no longer maintained, I decided to create my own independent repository.
+Because it seems that **pybfd** is no longer maintained, I decided to create my own independent repository.
 
-For compatibility reasons the name of the module also changed from pybfd to pybfd3.
+## Install (PyPI)
+
+```
+$ pip install --user pybfd3
+````
 
 ## Install (Local)
-
-**Note:**
-
-Depending on your pip version, you may need to add pip's ***--egg*** install option to successfully complete the installation.
 
 ```
 $ git clone https://github.com/0xe1a00000/pybfd3.git
 $ pip install --user ./pybfd3
 ```
+
+**Note:**  
+
+Depending on your pip version, you may need to add pip's ***--egg*** install option to successfully complete the installation.
 
 ## Sample Session
 
