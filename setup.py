@@ -6,6 +6,7 @@
 #
 
 from __future__ import print_function
+from builtins import open
 
 import os
 import re
@@ -217,7 +218,7 @@ class CustomBuildExtension( build_ext ):
         print("[+] Generating .C files...")
         gen_file = os.path.join(PACKAGE_DIR, "gen_bfd_archs.c")
         with open(gen_file, "w+") as fd:
-            fd.write(source_bfd_archs_c)
+            fd.write(source_bfd_archs_c.decode('utf-8'))
         print("[+]   %s" % gen_file)
 
         if self.with_static_binutils:
@@ -248,7 +249,7 @@ class CustomBuildExtension( build_ext ):
         os.system( cmd )
         # generate python specific data
         with open(gen_file, "a") as f:
-            f.write( gen_supported_archs(supported_archs) )
+            f.write(gen_supported_archs(supported_archs).decode('utf-8'))
 
         # Remove unused files.
         for obj in objects:
@@ -270,7 +271,7 @@ class CustomBuildExtension( build_ext ):
         print("[+] Generating .h files...")
         gen_file = os.path.join(PACKAGE_DIR, "supported_disasm.h")
         with open(gen_file, "w+") as fd:
-            fd.write(gen_source)
+            fd.write(gen_source.decode('utf-8'))
         print("[+]   %s" % gen_file)
 
         return supported_archs
@@ -393,12 +394,14 @@ class CustomBuildExtension( build_ext ):
 
         return build_ext.build_extensions(self)
 
-def main():
+def get_long_description():
     dir = path.abspath(path.dirname(__file__))
     readme = path.join(dir, 'README.md')
     with open(readme, encoding='utf-8') as file:
          long_description = file.read()
+    return long_description
 
+def main():
     try:
         #
         # Create a setup for the current package in order to allow the user to
@@ -409,7 +412,7 @@ def main():
             version = __version__,
             packages = [PACKAGE_DIR],
             description = __description__,
-            long_description = long_description,
+            long_description = get_long_description(),
             long_description_content_type="text/markdown",
             url = "https://github.com/0xe1a00000/pybfd3.git",
             ext_modules = [
