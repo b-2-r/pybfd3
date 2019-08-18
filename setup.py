@@ -20,19 +20,14 @@ from distutils.ccompiler import new_compiler
 from distutils.command.build_ext import build_ext
 from distutils.command.build import build
 from distutils.command.install import install
+from os import path
 
 __author__           = "Groundworks Technologies OSS Team"
 __contact__          = "oss@groundworkstech.com"
-__description__      = "A Python interface to the GNU Binary File Descriptor (BFD) library."
-__long_description__ = """
-It's a complete (or at least tries to be) wrapper around the low level
-functionality provided by GNU Binutils libopcodes and libbfd.
-This allows the user to manipulate all the supported architectures and file
-formats that Binutils tools does.
-"""
-__company__           = "Groundworks Technologies"
-__year__              = "2013"
-__version__           = "0.1.1"
+__description__      = "A Python (3.x compatible) interface to the GNU Binary File Descriptor (BFD) and opcodes library."
+__company__          = "Groundworks Technologies"
+__year__             = "2013"
+__version__          = "0.1.2"
 __maintainer__       = "Manuel Gebele"
 __maintainer_email__ = "m.gebele@tuta.io"
 
@@ -398,6 +393,11 @@ class CustomBuildExtension( build_ext ):
 
         return build_ext.build_extensions(self)
 
+def get_long_description():
+    dir = path.abspath(path.dirname(__file__))
+    readme = path.join(dir, 'README.md')
+    with open(readme, encoding='utf-8') as file:
+         return file.read()
 
 def main():
     try:
@@ -410,7 +410,8 @@ def main():
             version = __version__,
             packages = [PACKAGE_DIR],
             description = __description__,
-            long_description = __long_description__,
+            long_description = get_long_description(),
+            long_description_content_type='text/markdown',
             url = "https://github.com/0xe1a00000/pybfd3.git",
             ext_modules = [
                 # These extensions will be augmented using runtime information

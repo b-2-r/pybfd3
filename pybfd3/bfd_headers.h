@@ -8,7 +8,7 @@
 #define PYBFD3_HEADERS
 
 #define PACKAGE "pybfd3"
-#define PACKAGE_VERSION "0.1.1"
+#define PACKAGE_VERSION "0.1.2"
 
 #include <dis-asm.h>
 
