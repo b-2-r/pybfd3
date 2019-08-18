@@ -6,8 +6,8 @@
 #
 
 from __future__ import print_function
-from builtins import open
 
+import io
 import os
 import re
 import sys
@@ -161,6 +161,12 @@ class CustomBuildExtension( build_ext ):
                 return lib[3:-len(ext)]
         raise Exception("unable to prepare libraries for %s" % c )
 
+    def write_to_file(self, file, str_or_bytes):
+        if sys.version_info[0] >= 3:
+            file.write(str_or_bytes)
+        else:
+            file.write(str_or_bytes.decode('utf-8'))
+
     def generate_source_files( self ):
         """
         Genertate source files to be used during the compile process of the
@@ -217,8 +223,8 @@ class CustomBuildExtension( build_ext ):
         source_bfd_archs_c = generate_supported_architectures_source(supported_archs, supported_machines)
         print("[+] Generating .C files...")
         gen_file = os.path.join(PACKAGE_DIR, "gen_bfd_archs.c")
-        with open(gen_file, "w+") as fd:
-            fd.write(source_bfd_archs_c.decode('utf-8'))
+        with io.open(gen_file, "w+") as fd:
+            self.write_to_file(fd, source_bfd_archs_c)
         print("[+]   %s" % gen_file)
 
         if self.with_static_binutils:
@@ -248,8 +254,8 @@ class CustomBuildExtension( build_ext ):
         # generate C dependent definitions
         os.system( cmd )
         # generate python specific data
-        with open(gen_file, "a") as f:
-            f.write(gen_supported_archs(supported_archs).decode('utf-8'))
+        with io.open(gen_file, "a") as fd:
+            self.write_to_file(fd, gen_supported_archs(supported_archs))
 
         # Remove unused files.
         for obj in objects:
@@ -270,8 +276,8 @@ class CustomBuildExtension( build_ext ):
 
         print("[+] Generating .h files...")
         gen_file = os.path.join(PACKAGE_DIR, "supported_disasm.h")
-        with open(gen_file, "w+") as fd:
-            fd.write(gen_source.decode('utf-8'))
+        with io.open(gen_file, "w+") as fd:
+            self.write_to_file(fd, gen_source)
         print("[+]   %s" % gen_file)
 
         return supported_archs
@@ -397,7 +403,7 @@ class CustomBuildExtension( build_ext ):
 def get_long_description():
     dir = path.abspath(path.dirname(__file__))
     readme = path.join(dir, 'README.md')
-    with open(readme, encoding='utf-8') as file:
+    with io.open(readme, encoding='utf-8') as file:
          long_description = file.read()
     return long_description
 
