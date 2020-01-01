@@ -15,7 +15,7 @@ $ pip install --user pybfd3
 Method 2: Local installation.
 
 ```
-$ git clone https://github.com/0xe1a00000/pybfd3.git
+$ git clone https://github.com/ch1rh0/pybfd3.git
 $ pip install --user ./pybfd3
 ```
 
