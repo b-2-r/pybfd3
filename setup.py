@@ -381,7 +381,7 @@ class CustomBuildExtension( build_ext ):
         # add dependecy to libiberty
         if self.with_static_binutils or sys.platform == "darwin": # in OSX we always needs a static lib-iverty.
 
-            lib_liberty_partialpath = libraries_paths
+            lib_liberty_partialpath = [lib_path for lib_path in libraries_paths]
             if sys.platform == "darwin": # in osx the lib-iberty is prefixe by "machine" ppc/i386/x86_64
                 lib_liberty_partialpath.append( self._darwin_current_arch() )
             lib_liberty_partialpath.append( "libiberty.a" )
@@ -390,6 +390,22 @@ class CustomBuildExtension( build_ext ):
             if not os.path.isfile(lib_liberty_fullpath):
                 raise Exception("missing expected library (libiberty) in %s." % "\n".join(libraries_paths))
             ext_extra_objects.append(lib_liberty_fullpath)
+
+        # add dependecy to zlib and dl
+        if self.with_static_binutils:
+            lib_zlib_partialpath = [lib_path for lib_path in libraries_paths]
+            lib_zlib_partialpath.append( "libz.so" )
+            lib_zlib_fullpath = os.path.join(*lib_zlib_partialpath ) # merge the prefix and the path
+            if not os.path.isfile(lib_zlib_fullpath):
+                raise Exception("missing expected library (libz) in %s." % "\n".join(libraries_paths))
+            ext_extra_objects.append(lib_zlib_fullpath)
+
+            lib_dl_partialpath = [lib_path for lib_path in libraries_paths]
+            lib_dl_partialpath.append( "libdl.so" )
+            lib_dl_fullpath = os.path.join(*lib_dl_partialpath ) # merge the prefix and the path
+            if not os.path.isfile(lib_dl_fullpath):
+                raise Exception("missing expected library (libdl) in %s." % "\n".join(libraries_paths))
+            ext_extra_objects.append(lib_dl_fullpath)
 
         # generate .py / .h files that depends of libopcodes / libbfd currently selected
         final_supported_archs, macros = self.generate_source_files()
