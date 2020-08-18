@@ -12,6 +12,11 @@
 
 #include <dis-asm.h>
 
+#ifdef PYBFD3_BFD_GE_2_29
+// In binutils 2.29 print_insn_i386 disappeared from the dis-asm.h header
+int print_insn_i386 (bfd_vma, disassemble_info *);
+#endif
+
 #define PYBFD3_SYMBOL_VALUE_FMT "k" // unsigned long
 #define PYBFD3_SYMBOL_FLAG_FMT "I" // typedef unsigned int flagword;	/* 32 bits of flags */
 
