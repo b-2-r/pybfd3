@@ -194,8 +194,12 @@ class CustomBuildExtension( build_ext ):
         if self.with_static_binutils: # use the nm from the binutils distro
 
             nms = [
-                os.path.join( libs_dir, "..", "bin", "nm" ), # default name of nm
+                os.path.join( libs_dir, "..", "bin", "nm" ) # default name of nm
+                for libs_dir in libs_dirs
+            ]
+            nms = nms + [
                 os.path.join( libs_dir, "..", "bin", "gnm" ) # in OSX brew install binutils's nm as gnm.
+                for libs_dir in libs_dirs
             ]
             path_to_nm = None
             for nm_fullpath in nms:
