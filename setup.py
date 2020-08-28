@@ -194,8 +194,12 @@ class CustomBuildExtension( build_ext ):
         if self.with_static_binutils: # use the nm from the binutils distro
 
             nms = [
-                os.path.join( libs_dir, "..", "bin", "nm" ), # default name of nm
+                os.path.join( libs_dir, "..", "bin", "nm" ) # default name of nm
+                for libs_dir in libs_dirs
+            ]
+            nms = nms + [
                 os.path.join( libs_dir, "..", "bin", "gnm" ) # in OSX brew install binutils's nm as gnm.
+                for libs_dir in libs_dirs
             ]
             path_to_nm = None
             for nm_fullpath in nms:
@@ -221,6 +225,20 @@ class CustomBuildExtension( build_ext ):
             self.with_static_binutils == None)
 
         source_bfd_archs_c = generate_supported_architectures_source(supported_archs, supported_machines)
+        print("[+] Testing for print_insn_i386...")
+        try:
+            c_compiler = new_compiler()
+            objects = c_compiler.compile(
+                [os.path.join(PACKAGE_DIR, "test_print_insn_i386.c"), ],
+                include_dirs = [self.includes,],
+                )
+            if len(objects) > 0:
+                macros = None
+            else:
+                macros = [("PYBFD3_BFD_GE_2_29", None)]
+        except:
+            macros = [("PYBFD3_BFD_GE_2_29", None)]
+
         print("[+] Generating .C files...")
         gen_file = os.path.join(PACKAGE_DIR, "gen_bfd_archs.c")
         with io.open(gen_file, "w+") as fd:
@@ -235,7 +253,8 @@ class CustomBuildExtension( build_ext ):
         c_compiler = new_compiler()
         objects = c_compiler.compile(
             [os.path.join(PACKAGE_DIR, "gen_bfd_archs.c"), ],
-            include_dirs = [self.includes,]
+            include_dirs = [self.includes,],
+            macros=macros,
             )
         program = c_compiler.link_executable(
             objects,
@@ -280,7 +299,7 @@ class CustomBuildExtension( build_ext ):
             self.write_to_file(fd, gen_source)
         print("[+]   %s" % gen_file)
 
-        return supported_archs
+        return supported_archs, macros
 
     def _darwin_current_arch(self):
         """Add Mac OS X support."""
@@ -362,7 +381,7 @@ class CustomBuildExtension( build_ext ):
         # add dependecy to libiberty
         if self.with_static_binutils or sys.platform == "darwin": # in OSX we always needs a static lib-iverty.
 
-            lib_liberty_partialpath = libraries_paths
+            lib_liberty_partialpath = [lib_path for lib_path in libraries_paths]
             if sys.platform == "darwin": # in osx the lib-iberty is prefixe by "machine" ppc/i386/x86_64
                 lib_liberty_partialpath.append( self._darwin_current_arch() )
             lib_liberty_partialpath.append( "libiberty.a" )
@@ -372,8 +391,24 @@ class CustomBuildExtension( build_ext ):
                 raise Exception("missing expected library (libiberty) in %s." % "\n".join(libraries_paths))
             ext_extra_objects.append(lib_liberty_fullpath)
 
+        # add dependecy to zlib and dl
+        if self.with_static_binutils:
+            lib_zlib_partialpath = [lib_path for lib_path in libraries_paths]
+            lib_zlib_partialpath.append( "libz.so" )
+            lib_zlib_fullpath = os.path.join(*lib_zlib_partialpath ) # merge the prefix and the path
+            if not os.path.isfile(lib_zlib_fullpath):
+                raise Exception("missing expected library (libz) in %s." % "\n".join(libraries_paths))
+            ext_extra_objects.append(lib_zlib_fullpath)
+
+            lib_dl_partialpath = [lib_path for lib_path in libraries_paths]
+            lib_dl_partialpath.append( "libdl.so" )
+            lib_dl_fullpath = os.path.join(*lib_dl_partialpath ) # merge the prefix and the path
+            if not os.path.isfile(lib_dl_fullpath):
+                raise Exception("missing expected library (libdl) in %s." % "\n".join(libraries_paths))
+            ext_extra_objects.append(lib_dl_fullpath)
+
         # generate .py / .h files that depends of libopcodes / libbfd currently selected
-        final_supported_archs = self.generate_source_files()
+        final_supported_archs, macros = self.generate_source_files()
 
         # final hacks for OSX
         if sys.platform == "darwin":
@@ -397,6 +432,7 @@ class CustomBuildExtension( build_ext ):
             extension.extra_objects.extend( ext_extra_objects )
             extension.libraries.extend( ext_libs )
             extension.library_dirs.extend( ext_libs_dir )
+            extension.define_macros.extend( macros )
 
         return build_ext.build_extensions(self)
 

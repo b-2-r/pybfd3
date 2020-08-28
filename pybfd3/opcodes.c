@@ -976,7 +976,15 @@ static PyObject * pyopcodes_initialize_bfd(PyObject *self, PyObject *args)
                 bfd_big_endian(abfd) ? BFD_ENDIAN_BIG : BFD_ENDIAN_LITTLE;
 
             // Assign the disassembler function selected by BFD itself.
+#ifdef PYBFD3_BFD_GE_2_29
+            // In binutils 2.29 the signature for disassembler changed
+            pdisasm_ptr->pfn_disassemble = disassembler(bfd_get_arch(abfd),
+                bfd_little_endian(abfd) ? FALSE : TRUE,
+                bfd_get_mach(abfd),
+                NULL);
+#else
             pdisasm_ptr->pfn_disassemble = disassembler(abfd);
+#endif
 
             if (pdisasm_ptr->pfn_disassemble) {
                 return Py_BuildValue("n", pdisasm_ptr);
