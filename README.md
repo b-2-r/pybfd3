@@ -4,19 +4,23 @@ This clone of [PyBFD](https://github.com/Groundworkstech/pybfd) mainly adds supp
 
 Because it seems that **pybfd** is no longer maintained, I decided to create my own independent repository.
 
+## Requirements
+
+- The **binutils-dev** package must be installed first.
+
 ## Install
 
 Method 1: Via Python Package Index (PyPI).
 
 ```
-$ pip install --user pybfd3
+$ pip install pybfd3
 ````
 
 Method 2: Local installation.
 
 ```
-$ git clone https://github.com/ch1rh0/pybfd3.git
-$ pip install --user ./pybfd3
+$ git clone https://github.com/b-2-r/pybfd3.git
+$ pip install ./pybfd3
 ```
 
 **Note:**  

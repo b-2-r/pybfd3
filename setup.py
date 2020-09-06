@@ -28,9 +28,9 @@ __contact__          = "oss@groundworkstech.com"
 __description__      = "A Python (3.x compatible) interface to the GNU Binary File Descriptor (BFD) and opcodes library."
 __company__          = "Groundworks Technologies"
 __year__             = "2013"
-__version__          = "0.1.3"
+__version__          = "0.1.4"
 __maintainer__       = "Manuel Gebele"
-__maintainer_email__ = "m.gebele@tuta.io"
+__maintainer_email__ = "m.gebele.contact@tuta.io"
 
 MODULE_NAME = "pybfd3"
 PACKAGE_DIR = "pybfd3"
@@ -456,7 +456,7 @@ def main():
             description = __description__,
             long_description = get_long_description(),
             long_description_content_type="text/markdown",
-            url = "https://github.com/0xe1a00000/pybfd3.git",
+            url = "https://github.com/b-2-r/pybfd3.git",
             ext_modules = [
                 # These extensions will be augmented using runtime information
                 # in CustomBuildExtension
