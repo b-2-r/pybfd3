@@ -6,13 +6,14 @@ Because it seems that **pybfd** is no longer maintained, I decided to create my 
 
 ## Changelog
 
-### Version 0.1.5
+**[Version 0.1.5]**
+- Remove legacy distutils usage. (thanks to [@Bidski](https://github.com/Bidski))
 
-- Remove legacy distutils usage (thanks to @Bidski)
+**[Version 0.1.4]**
+- Update PyBFD3 to be compatible with binutils > 2.29. (thanks to [@Bidski](https://github.com/Bidski))
 
-### Version 0.1.4
-
-- Update PyBFD3 to be compatible with binutils > 2.29 (thanks to @Bidski)
+**[Version 0.1.3]**
+- Initial release.
 
 ## Requirements
 
