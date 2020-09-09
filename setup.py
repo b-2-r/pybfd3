@@ -16,11 +16,9 @@ import platform
 from setuptools import setup, Extension
 
 from traceback import print_exc
-#from distutils.core import setup, Extension
-from distutils.ccompiler import new_compiler
-from distutils.command.build_ext import build_ext
+from setuptools.command.build_ext import build_ext
 from distutils.command.build import build
-from distutils.command.install import install
+from setuptools.command.install import install
 from os import path
 
 __author__           = "Groundworks Technologies OSS Team"
@@ -227,8 +225,7 @@ class CustomBuildExtension( build_ext ):
         source_bfd_archs_c = generate_supported_architectures_source(supported_archs, supported_machines)
         print("[+] Testing for print_insn_i386...")
         try:
-            c_compiler = new_compiler()
-            objects = c_compiler.compile(
+            objects = self.compiler.compile(
                 [os.path.join(PACKAGE_DIR, "test_print_insn_i386.c"), ],
                 include_dirs = [self.includes,],
                 )
@@ -250,13 +247,12 @@ class CustomBuildExtension( build_ext ):
         else:
            link_to_libs = [self.prepare_libs_for_cc(os.path.basename(lib)) for lib in self.libs]
 
-        c_compiler = new_compiler()
-        objects = c_compiler.compile(
+        objects = self.compiler.compile(
             [os.path.join(PACKAGE_DIR, "gen_bfd_archs.c"), ],
             include_dirs = [self.includes,],
             macros=macros,
             )
-        program = c_compiler.link_executable(
+        program = self.compiler.link_executable(
             objects,
             libraries = link_to_libs,
             library_dirs = libs_dirs,
