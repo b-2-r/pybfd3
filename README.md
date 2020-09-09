@@ -4,6 +4,16 @@ This clone of [PyBFD](https://github.com/Groundworkstech/pybfd) mainly adds supp
 
 Because it seems that **pybfd** is no longer maintained, I decided to create my own independent repository.
 
+## Changelog
+
+### Version 0.1.5
+
+- Remove legacy distutils usage (thanks to @Bidski)
+
+### Version 0.1.4
+
+- Update PyBFD3 to be compatible with binutils > 2.29 (thanks to @Bidski)
+
 ## Requirements
 
 - The **binutils-dev** package must be installed first.
@@ -61,4 +71,3 @@ $ ./sample-session.py `which sudo`
 
 - ~~improve ***get_symbols*** to not throwing an error if no symbols are present~~
 - macOS testing
-

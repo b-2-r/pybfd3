@@ -1,5 +1,5 @@
 #define PACKAGE "pybfd3"
-#define PACKAGE_VERSION "0.1.4"
+#define PACKAGE_VERSION "0.1.5"
 
 #include <dis-asm.h>
 int main(int argc, char **argv) {

@@ -26,7 +26,7 @@ __contact__          = "oss@groundworkstech.com"
 __description__      = "A Python (3.x compatible) interface to the GNU Binary File Descriptor (BFD) and opcodes library."
 __company__          = "Groundworks Technologies"
 __year__             = "2013"
-__version__          = "0.1.4"
+__version__          = "0.1.5"
 __maintainer__       = "Manuel Gebele"
 __maintainer_email__ = "m.gebele.contact@tuta.io"
 
