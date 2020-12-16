@@ -138,7 +138,7 @@ class Bfd(object):
         #
         # Determine if the user passed a file-descriptor or a _file and
         # proceed accordingly.
-        if type(_file) is io.StringIO:
+        if isinstance(_file, io.IOBase):
             # The user specified a file descriptor.
             filename = _file.name
 
