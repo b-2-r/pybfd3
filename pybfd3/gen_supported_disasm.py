@@ -74,7 +74,7 @@ known_archs = [
   ("bfd_arch_avr",      "print_insn_avr",           "print_insn_avr",           "Atmel AVR microcontrollers."),
   ("bfd_arch_bfin",     "print_insn_bfin",          "print_insn_bfin",          "ADI Blackfin"),
   ("bfd_arch_cr16",     "print_insn_cr16",          "print_insn_cr16",          "National Semiconductor CompactRISC (ie CR16)."),
-  ("bfd_arch_cr16c",    "print_insn_cr16",          "print_insn_cr16",          "National Semiconductor CompactRISC."),
+#  ("bfd_arch_cr16c",    "print_insn_cr16",          "print_insn_cr16",          "National Semiconductor CompactRISC."),
   ("bfd_arch_crx",      "print_insn_crx",           "print_insn_crx",           "National Semiconductor CRX."),
   ("bfd_arch_rx",       "print_insn_rx",            "print_insn_rx",            "Renesas RX."),
   ("bfd_arch_s390",     "print_insn_s390",          "print_insn_s390",          "IBM s390"),
@@ -106,6 +106,8 @@ known_archs = [
   # bfd_arch_cris - Axis CRIS
 ]
 
+bfd2_29_extern = "int %s(bfd_vma, disassemble_info *);";
+
 supported_archs_header = """
 #ifndef __SUPPORTED_DISASM_H_
 #define __SUPPORTED_DISASM_H_
@@ -122,6 +124,9 @@ typedef struct _supported_disasm
     disassembler_ftype      bfd_print_insn_endian_big;
 } supported_disasm, *p_supported_disasm;
 
+#ifdef PYBFD3_BFD_GE_2_29
+%s
+#endif
 
 supported_disasm p_supported_disasm_list[]= {
 %s
@@ -145,6 +150,10 @@ gen_bfd_archs_code = r"""
 #define py_empty_line fprintf(fd, "\n");
 
 #define py_const_def(c,v) fprintf(fd, #c " = %%d\n", v);
+
+#ifdef PYBFD3_BFD_GE_2_29
+%s
+#endif
 
 //
 // Name : write_architectures_constants
@@ -221,11 +230,18 @@ def generate_supported_disassembler_header(supported_archs):
 
     """
     arch_entries = []
+    arch_externs = []
 
     for arch, little, big, comment in supported_archs:
         arch_entries.append( header_arch_entry % (arch, little, big) )
+        arch_externs.append( bfd2_29_extern % little )
 
-    return supported_archs_header % ( ",\n".join(arch_entries) )
+        if little != big:
+            arch_externs.append( bfd2_29_extern % big )
+
+    return supported_archs_header % (
+        "\n".join(arch_externs),
+        ",\n".join(arch_entries))
 
 def generate_supported_architectures_source(supported_archs, supported_machines):
     """Extract export symbols using binutils's nm utility from Binutils and
@@ -233,15 +249,22 @@ def generate_supported_architectures_source(supported_archs, supported_machines)
 
     """
     arch_entries = []
+    arch_externs = []
     mach_entries = []
 
+    # int %s(bfd_vma, disassemble_info *);
     for arch, little, big, comment in supported_archs:
         arch_entries.append( pybfd3_arch_entry % (arch[4 : ].upper(), arch) )
+        arch_externs.append( bfd2_29_extern % little )
+
+        if little != big:
+            arch_externs.append( bfd2_29_extern % big )
 
     for mach, value in supported_machines:
         mach_entries.append( pybfd3_mach_entry % (mach[4 : ].upper(), value) )
 
     return gen_bfd_archs_code % (
+        "\n".join(arch_externs),
         "\n".join(arch_entries),
         "\n".join(mach_entries))
 
