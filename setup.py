@@ -87,11 +87,13 @@ class CustomBuildExtension( build_ext ):
         "darwin": {
             "libs": [
                 "/opt/local/lib", # macports
-                "/usr/local/lib", # homebrew
+                "/usr/local/lib", # homebrew 1
+                "/usr/local/opt/binutils/lib", # homebrew 2
             ],
             "includes": [
                 "/opt/local/include", # macports
-                "/usr/local/include", # homebrew
+                "/usr/local/include", # homebrew 1
+                "/usr/local/opt/binutils/include", # homebrew 2
             ],
             "possible-lib-ext": [
                 ".a", # homebrew
@@ -378,8 +380,9 @@ class CustomBuildExtension( build_ext ):
         if self.with_static_binutils or sys.platform == "darwin": # in OSX we always needs a static lib-iverty.
 
             lib_liberty_partialpath = [lib_path for lib_path in libraries_paths]
-            if sys.platform == "darwin": # in osx the lib-iberty is prefixe by "machine" ppc/i386/x86_64
-                lib_liberty_partialpath.append( self._darwin_current_arch() )
+            # NOTE: At least on Catalina, this is no longer the case
+#            if sys.platform == "darwin": # in osx the lib-iberty is prefixe by "machine" ppc/i386/x86_64
+#                lib_liberty_partialpath.append( self._darwin_current_arch() )
             lib_liberty_partialpath.append( "libiberty.a" )
 
             lib_liberty_fullpath = os.path.join(*lib_liberty_partialpath ) # merge the prefix and the path
@@ -412,6 +415,8 @@ class CustomBuildExtension( build_ext ):
             os.environ["ARCHFLAGS"] = "-arch %s" % self._darwin_current_arch()
             # In OSX we've to link against libintl.
             ext_libs.append("intl")
+            # In OSX we also must link against libz
+            ext_libs.append("z")
 
             # TODO: we have to improve the detection of gettext/libintl in OSX.. this is a quick fix.
             dirs = [
