@@ -17,7 +17,31 @@ Because it seems that **pybfd** is no longer maintained, I decided to create my 
 
 ## Requirements
 
+### Linux
+
 - The **binutils-dev** package must be installed first.
+
+### macOS
+
+The default brew install doesn't include the required library `libiberty`, because of this you need to modify the brew formula to build and install `libiberty`. To do this run:
+
+```
+$ brew edit binutils
+```
+
+Scroll down the `def install` section and add `--enable-install-libiberty` to the `configure` arguments so that it looks like the following:
+
+```
+                          "--disable-nls",
+                          "--enable-install-libiberty"
+    system "make"
+```
+
+Now run the following command to force brew to build locally instead of from a bottle:
+
+```
+$ brew install --build-from-source binutils
+```
 
 ## Install
 
